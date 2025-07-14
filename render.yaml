@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: spider-intel
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        fromDotEnv: true
+      - key: TELEGRAM_WEBHOOK_URL
+        fromDotEnv: true
+      - key: SUPABASE_URL
+        fromDotEnv: true
+      - key: SUPABASE_ANON_KEY
+        fromDotEnv: true
+      - key: SUPABASE_DB_PASSWORD
+        fromDotEnv: true
+      - key: SECRET_KEY
+        fromDotEnv: true
+      - key: IPAPI_KEY
+        fromDotEnv: true
+      - key: SHODAN_API_KEY
+        fromDotEnv: true
+      - key: ABUSEIPDB_API_KEY
+        fromDotEnv: true
