@@ -2,6 +2,7 @@ import os
 import requests
 import shodan
 
+
 from dotenv import load_dotenv
 load_dotenv()
 

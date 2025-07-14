@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+from app.scanner.email_scanner import scan_email
+
 
 # Chargement des variables d’environnement
 load_dotenv()
