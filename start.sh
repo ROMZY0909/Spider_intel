@@ -1,7 +1,9 @@
 #!/bin/bash
+export PYTHONPATH="${PYTHONPATH}:/opt/render/project/src"
 
-# Définir le webhook en tâche de fond (facultatif mais propre)
-python app/telegram/set_webhook.py &
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}
 
-# Démarrer FastAPI au premier plan (Render surveille ce process)
-exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}
+sleep 5
+python app/telegram/set_webhook.py
+
+tail -f /dev/null
