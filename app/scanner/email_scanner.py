@@ -1,9 +1,8 @@
 import os
 import requests
 import shodan
-
-
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Chargement des clés API depuis .env
@@ -59,3 +58,7 @@ def full_osint_lookup(ip):
         "shodan": lookup_shodan(ip),
         "abuseipdb": lookup_abuseipdb(ip)
     }
+
+# === Alias pour compatibilité avec les autres scripts ===
+def scan_email(ip: str):
+    return full_osint_lookup(ip)
