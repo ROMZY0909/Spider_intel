@@ -4,8 +4,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-from app.scanner.email_scanner import scan_email
-
 
 # Chargement des variables d’environnement
 load_dotenv()
@@ -21,7 +19,7 @@ app = FastAPI(
     description="🕷️ Plateforme de veille OSINT avec intégration Telegram, PDF, Supabase et APIs de sécurité."
 )
 
-# Configuration des CORS (optionnel selon ton frontend)
+# Configuration des CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # À restreindre en prod
@@ -34,7 +32,7 @@ app.add_middleware(
 app.include_router(EmailRouter, prefix="/email", tags=["Email OSINT"])
 app.include_router(AuthRouter, prefix="/auth", tags=["Authentification"])
 
-# Route racine pour tester le fonctionnement
+# Route de test
 @app.get("/")
 def read_root():
     return {

@@ -1,25 +1,43 @@
 services:
   - type: web
     name: spider-intel
-    runtime: python
+    env: python
+    plan: free
+    region: frankfurt  # ou oregon selon ta localisation
     buildCommand: pip install -r requirements.txt
-    startCommand: bash start.sh
+    startCommand: ./start.sh
     envVars:
+      - key: PORT
+        value: 10000
       - key: TELEGRAM_BOT_TOKEN
-        fromDotEnv: true
+        value: ${TELEGRAM_BOT_TOKEN}
       - key: TELEGRAM_WEBHOOK_URL
-        fromDotEnv: true
-      - key: SUPABASE_URL
-        fromDotEnv: true
-      - key: SUPABASE_ANON_KEY
-        fromDotEnv: true
-      - key: SUPABASE_DB_PASSWORD
-        fromDotEnv: true
-      - key: SECRET_KEY
-        fromDotEnv: true
-      - key: IPAPI_KEY
-        fromDotEnv: true
+        value: https://spider-intel.onrender.com/webhook
+      - key: TELEGRAM_CHAT_ID
+        value: ${TELEGRAM_CHAT_ID}
       - key: SHODAN_API_KEY
-        fromDotEnv: true
+        value: ${SHODAN_API_KEY}
       - key: ABUSEIPDB_API_KEY
-        fromDotEnv: true
+        value: ${ABUSEIPDB_API_KEY}
+      - key: IPAPI_KEY
+        value: ${IPAPI_KEY}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: SUPABASE_DB_HOST
+        value: ${SUPABASE_DB_HOST}
+      - key: SUPABASE_DB_PORT
+        value: ${SUPABASE_DB_PORT}
+      - key: SUPABASE_DB_NAME
+        value: ${SUPABASE_DB_NAME}
+      - key: SUPABASE_DB_USER
+        value: ${SUPABASE_DB_USER}
+      - key: SUPABASE_DB_PASSWORD
+        value: ${SUPABASE_DB_PASSWORD}
+      - key: SECRET_KEY
+        value: ${SECRET_KEY}
+      - key: ENVIRONMENT
+        value: development

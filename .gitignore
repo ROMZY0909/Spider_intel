@@ -11,6 +11,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Fichiers de déploiement spécifiques
-start.sh
-render.yaml
+# Ne PAS ignorer ces fichiers ! (indispensables au déploiement)
+# start.sh
+# render.yaml
