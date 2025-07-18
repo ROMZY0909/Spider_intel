@@ -4,7 +4,6 @@ python-dotenv
 requests
 shodan
 bcrypt==4.0.1
-psycopg2-binary==2.9.9
 python-telegram-bot==13.15
 jinja2
 weasyprint
