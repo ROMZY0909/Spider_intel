@@ -11,3 +11,4 @@ reportlab
 shodan
 PyJWT==2.8.0
 psycopg2-binary
+bcrypt
