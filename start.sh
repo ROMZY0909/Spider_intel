@@ -1,9 +1,4 @@
 #!/bin/bash
-export PYTHONPATH="${PYTHONPATH}:/opt/render/project/src"
-
-uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}
-
-sleep 5
-python app/telegram/set_webhook.py
-
-tail -f /dev/null
+# Lancer FastAPI via Uvicorn (au premier plan)
+echo "🚀 Démarrage de l'API avec Uvicorn..."
+exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}
