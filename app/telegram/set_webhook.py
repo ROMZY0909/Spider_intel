@@ -11,25 +11,29 @@ try:
 except ImportError:
     raise ImportError("❌ Le module 'telegram' est introuvable. Installe-le avec : pip install python-telegram-bot==20.7")
 
-# ✅ Chargement des variables d’environnement
+# Chargement des variables
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-WEBHOOK_URL = os.getenv("BASE_WEBHOOK_URL")
-SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")  # recommandé
+BASE_URL = os.getenv("BASE_WEBHOOK_URL")  # Ex: https://spider-intel.onrender.com
+SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")  # Facultatif
 
-if not TOKEN or not WEBHOOK_URL:
+# Vérification stricte
+if not TOKEN or not BASE_URL:
     raise EnvironmentError("❌ Variables TELEGRAM_BOT_TOKEN ou BASE_WEBHOOK_URL manquantes dans .env")
+
+# Définition du chemin exact du webhook
+WEBHOOK_PATH = os.getenv("TELEGRAM_WEBHOOK_PATH", "/telegram/webhook")
+FULL_WEBHOOK_URL = f"{BASE_URL}{WEBHOOK_PATH}"
 
 bot = Bot(token=TOKEN)
 
 async def set_webhook():
     try:
-        full_url = f"{WEBHOOK_URL}/webhook"
         success = await bot.set_webhook(
-            url=full_url,
+            url=FULL_WEBHOOK_URL,
             secret_token=SECRET_TOKEN if SECRET_TOKEN else None
         )
         if success:
-            print(f"✅ Webhook Telegram défini avec succès : {full_url}")
+            print(f"✅ Webhook Telegram défini avec succès : {FULL_WEBHOOK_URL}")
         else:
             print("⚠️ Le webhook a été défini mais n’a pas retourné de succès explicite.")
     except Exception as e:
