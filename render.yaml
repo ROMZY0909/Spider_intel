@@ -3,7 +3,8 @@ services:
     name: spider-intel
     env: python
     plan: free
-    region: frankfurt  # ou oregon selon ta localisation
+    region: frankfurt
+    pythonVersion: 3.11.9  # ✅ Ajout crucial ici
     buildCommand: pip install -r requirements.txt
     startCommand: ./start.sh
     envVars:
