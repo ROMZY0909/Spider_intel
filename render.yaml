@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: spider-intel
+    name: spider-intel1
     env: python
     plan: free
     region: frankfurt
