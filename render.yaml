@@ -4,24 +4,36 @@ services:
     env: python
     plan: free
     region: frankfurt
-    pythonVersion: 3.11.9  # ✅ Ajout crucial ici
-    buildCommand: pip install -r requirements.txt
+
+    buildCommand: |
+      echo "python-3.11.9" > runtime.txt
+      pip install -r requirements.txt
+
     startCommand: ./start.sh
+
     envVars:
       - key: PORT
         value: 10000
+
+      # ==== TELEGRAM ====
       - key: TELEGRAM_BOT_TOKEN
         value: ${TELEGRAM_BOT_TOKEN}
+      - key: TELEGRAM_SECRET_TOKEN
+        value: ${TELEGRAM_SECRET_TOKEN}
       - key: TELEGRAM_WEBHOOK_URL
         value: https://spider-intel.onrender.com/webhook
       - key: TELEGRAM_CHAT_ID
         value: ${TELEGRAM_CHAT_ID}
+
+      # ==== OSINT APIs ====
       - key: SHODAN_API_KEY
         value: ${SHODAN_API_KEY}
       - key: ABUSEIPDB_API_KEY
         value: ${ABUSEIPDB_API_KEY}
       - key: IPAPI_KEY
         value: ${IPAPI_KEY}
+
+      # ==== SUPABASE ====
       - key: SUPABASE_URL
         value: ${SUPABASE_URL}
       - key: SUPABASE_ANON_KEY
@@ -38,6 +50,8 @@ services:
         value: ${SUPABASE_DB_USER}
       - key: SUPABASE_DB_PASSWORD
         value: ${SUPABASE_DB_PASSWORD}
+
+      # ==== APP ====
       - key: SECRET_KEY
         value: ${SECRET_KEY}
       - key: ENVIRONMENT
