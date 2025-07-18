@@ -1,7 +1,18 @@
 #!/bin/bash
 
-# Activer le PYTHONPATH (utile pour Render)
-export PYTHONPATH=$(pwd)
+# Start FastAPI with Uvicorn
+echo "🚀 Starting Uvicorn..."
+uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000} || {
+    echo "❌ Uvicorn failed to start."
+    exit 1
+}
 
-# Démarrer FastAPI via Uvicorn (ne pas mettre en arrière-plan)
-uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}
+# Set Telegram Webhook
+echo "📡 Setting Telegram webhook..."
+python app/telegram/set_webhook.py || {
+    echo "❌ Failed to set webhook."
+    exit 1
+}
+
+# Keep container alive
+tail -f /dev/null

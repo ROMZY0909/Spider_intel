@@ -1,7 +1,6 @@
 # app/services/auth_service.py
 
 import os
-import psycopg2
 import bcrypt
 from dotenv import load_dotenv
 from app.core.security import create_token
