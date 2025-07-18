@@ -1,12 +1,12 @@
 services:
   - type: web
-    name: spider-intel1
+    name: spider-intel1  # ✅ Nouveau nom unique
     env: python
     plan: free
     region: frankfurt
 
     buildCommand: |
-      echo "python-3.11.9" > runtime.txt
+      echo "python-3.11.9" > runtime.txt  # ✅ Force Python 3.11.9
       pip install -r requirements.txt
 
     startCommand: ./start.sh
@@ -15,17 +15,17 @@ services:
       - key: PORT
         value: 10000
 
-      # ==== TELEGRAM ====
+      # 🔐 Variables Telegram
       - key: TELEGRAM_BOT_TOKEN
         value: ${TELEGRAM_BOT_TOKEN}
-      - key: TELEGRAM_SECRET_TOKEN
-        value: ${TELEGRAM_SECRET_TOKEN}
       - key: TELEGRAM_WEBHOOK_URL
-        value: https://spider-intel.onrender.com/webhook
+        value: https://spider-intel1.onrender.com/telegram/webhook
       - key: TELEGRAM_CHAT_ID
         value: ${TELEGRAM_CHAT_ID}
+      - key: TELEGRAM_SECRET_TOKEN
+        value: ${TELEGRAM_SECRET_TOKEN}
 
-      # ==== OSINT APIs ====
+      # 🛡️ API OSINT
       - key: SHODAN_API_KEY
         value: ${SHODAN_API_KEY}
       - key: ABUSEIPDB_API_KEY
@@ -33,7 +33,7 @@ services:
       - key: IPAPI_KEY
         value: ${IPAPI_KEY}
 
-      # ==== SUPABASE ====
+      # 🗃️ Supabase
       - key: SUPABASE_URL
         value: ${SUPABASE_URL}
       - key: SUPABASE_ANON_KEY
@@ -51,8 +51,10 @@ services:
       - key: SUPABASE_DB_PASSWORD
         value: ${SUPABASE_DB_PASSWORD}
 
-      # ==== APP ====
+      # 🔐 Sécurité
       - key: SECRET_KEY
         value: ${SECRET_KEY}
+
+      # ⚙️ Environnement
       - key: ENVIRONMENT
         value: development
