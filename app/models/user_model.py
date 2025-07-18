@@ -1,16 +1,18 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional, Literal
 
-class UserLogin(BaseModel):
-    """Modèle pour la soumission des identifiants utilisateur"""
+
+class User(BaseModel):
     username: str
-    password: str
+    email: str
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = False
+
+
+class UserInDB(User):
+    hashed_password: str
+
 
 class UserToken(BaseModel):
-    """Modèle retourné après authentification, contenant le JWT"""
     access_token: str
-    token_type: str = Field(default="bearer", const=True)
-
-class TokenPayload(BaseModel):
-    """Données extraites du JWT (payload)"""
-    sub: str  # Identifiant de l'utilisateur
-    role: str  # Rôle de l'utilisateur (admin, analyste, etc.)
+    token_type: Literal["bearer"] = "bearer"
