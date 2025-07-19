@@ -72,7 +72,13 @@
         });
 
         const data = await response.json();
-        resultDiv.innerText = data.message || "✅ Scan terminé.";
+
+        if (data.message && data.message.summary) {
+          resultDiv.innerText = data.message.summary;
+        } else {
+          resultDiv.innerText = "✅ Scan terminé, mais aucun résumé n'a été trouvé.";
+        }
+
       } catch (err) {
         resultDiv.innerText = "❌ Erreur réseau : " + err.message;
       }
