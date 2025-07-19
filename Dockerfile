@@ -1,22 +1,39 @@
-﻿# 🐍 Image officielle Python 3.11
+﻿# ✅ Image Python complète + librairies système nécessaires pour WeasyPrint
 FROM python:3.11-slim
 
-# 📁 Répertoire de travail dans le conteneur
+# ✅ Empêche les prompts interactifs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ✅ Répertoire de travail
 WORKDIR /app
 
-# 🧪 Copie tous les fichiers du projet dans le conteneur
+# ✅ Installation des dépendances système pour WeasyPrint
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libffi-dev \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcairo2 \
+    libgdk-pixbuf2.0-0 \
+    libxml2 \
+    libgobject-2.0-0 \
+    libssl-dev \
+    shared-mime-info \
+    && rm -rf /var/lib/apt/lists/*
+
+# ✅ Copie du projet
 COPY . .
 
-# 📦 Mise à jour de pip et installation des dépendances
+# ✅ Installation des dépendances Python
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# ✅ Rend start.sh exécutable
-RUN chmod +x start.sh
-
-# 🌐 Port d’écoute pour Render (utilise PORT injecté)
+# ✅ Port
 ENV PORT=10000
 EXPOSE $PORT
 
-# 🚀 Commande de démarrage
+# ✅ Permission d’exécution du script de démarrage (si nécessaire)
+RUN chmod +x start.sh
+
+# ✅ Lancement
 CMD ["./start.sh"]
