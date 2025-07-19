@@ -1,5 +1,3 @@
-# app/telegram/webhook.py
-
 from fastapi import APIRouter, Request
 import os
 from dotenv import load_dotenv
@@ -30,26 +28,25 @@ async def telegram_webhook(request: Request):
             if message_text == "/start":
                 bot.send_message(
                     chat_id=chat_id,
-                    text="🕷️ Bienvenue sur SPIDER INTEL ! Je suis prêt à scanner pour toi."
+                    text="🕷️ Bienvenue sur SPIDER INTEL !\nJe suis prêt à scanner pour toi.\n\nUtilise la commande :\n`/scan 8.8.8.8`",
+                    parse_mode="Markdown"
                 )
 
             elif message_text.startswith("/scan"):
                 try:
                     ip = message_text.split()[1]
-                    from utils.scanner_core import full_osint_lookup
-                    result = full_osint_lookup(ip)
 
-                    country = result.get("ip-api", {}).get("country", "N/A")
-                    abuse_score = result.get("abuseipdb", {}).get("abuseConfidenceScore", "N/A")
-                    org = result.get("shodan", {}).get("org", "N/A")
+                    # Import ici pour éviter l'erreur au chargement Render
+                    from scanner.email_scanner import scan_email
 
-                    response = (
-                        f"🕷️ Résultat du scan pour l'IP : {ip}\n\n"
-                        f"🌍 Pays : {country}\n"
-                        f"👮 Score AbuseIPDB : {abuse_score}\n"
-                        f"🏢 Fournisseur : {org}"
+                    result = scan_email(ip)
+                    summary = result.get("summary", "❌ Résumé indisponible.")
+
+                    bot.send_message(
+                        chat_id=chat_id,
+                        text=f"🔍 Résultat du scan pour *{ip}* :\n\n{summary}",
+                        parse_mode="Markdown"
                     )
-                    bot.send_message(chat_id=chat_id, text=response)
 
                 except Exception as scan_error:
                     bot.send_message(chat_id=chat_id, text=f"❌ Erreur pendant le scan : {scan_error}")
