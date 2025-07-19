@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Request
 import os
-import telegram
+from app.telegram._patched_inputfile import InputFile
 from dotenv import load_dotenv
 
 # Chargement des variables d'environnement
