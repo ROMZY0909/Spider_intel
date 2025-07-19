@@ -50,14 +50,15 @@ app.include_router(EmailRouter, prefix="/email", tags=["Email OSINT"])
 app.include_router(AuthRouter, prefix="/auth", tags=["Authentification"])
 app.include_router(TelegramWebhookRouter, prefix="", tags=["Telegram Webhook"])
 
+# ✅ Import de la fonction de scan depuis email_scanner.py
+from app.scanner.email_scanner import full_osint_lookup
+
 # ✅ Route d'accueil : interface web
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# ✅ Endpoint pour simuler un scan via interface web
-from utils.scanner_core import full_osint_lookup
-
+# ✅ Endpoint pour simuler un scan via l’interface web
 @app.post("/simulate_bot")
 async def simulate_bot(request: Request):
     data = await request.json()
