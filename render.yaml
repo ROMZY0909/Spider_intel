@@ -1,21 +1,17 @@
 services:
   - type: web
     name: spider-intel1
-    env: python
+    env: docker
     plan: free
     region: frankfurt
 
-    buildCommand: |
-      echo "python-3.11.9" > runtime.txt
-      pip install --upgrade pip
-      pip install -r requirements.txt
-
-    startCommand: ./start.sh
+    dockerfilePath: ./Dockerfile  # ✅ Précise où est le Dockerfile
 
     envVars:
       - key: PORT
         value: 10000
 
+      # 🔐 Variables Telegram
       - key: TELEGRAM_BOT_TOKEN
         sync: false
       - key: TELEGRAM_WEBHOOK_URL
@@ -25,6 +21,7 @@ services:
       - key: TELEGRAM_SECRET_TOKEN
         sync: false
 
+      # 🛡️ API OSINT
       - key: SHODAN_API_KEY
         sync: false
       - key: ABUSEIPDB_API_KEY
@@ -32,6 +29,7 @@ services:
       - key: IPAPI_KEY
         sync: false
 
+      # 🗃️ Supabase
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_ANON_KEY
@@ -49,7 +47,10 @@ services:
       - key: SUPABASE_DB_PASSWORD
         sync: false
 
+      # 🔐 Sécurité
       - key: SECRET_KEY
         sync: false
+
+      # ⚙️ Environnement
       - key: ENVIRONMENT
         value: development
