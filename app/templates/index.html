@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPIDER INTEL • CyberScan</title>
+  <style>
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background-color: #0e0e0e; color: #f1f1f1;
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; padding: 2rem;
+    }
+    .container {
+      background-color: #1b1b1b; padding: 2rem;
+      border-radius: 12px; width: 100%; max-width: 500px;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    }
+    h1 {
+      text-align: center; color: #00ff88; margin-bottom: 1rem;
+    }
+    label {
+      display: block; margin-top: 1rem; font-weight: bold;
+    }
+    input {
+      width: 100%; padding: 1rem; font-size: 1rem;
+      margin-top: 0.5rem; border-radius: 5px; border: none;
+    }
+    button {
+      background: #00ff88; color: #000;
+      padding: 1rem; font-size: 1rem; font-weight: bold;
+      margin-top: 1.5rem; border: none; border-radius: 5px;
+      width: 100%; cursor: pointer;
+    }
+    #result {
+      background: #111; padding: 1rem;
+      margin-top: 1.5rem; border-radius: 8px;
+      white-space: pre-wrap; font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🕷️ SPIDER INTEL</h1>
+    <p style="text-align:center">Scanner d'IP OSINT en ligne</p>
+
+    <label for="ip">Adresse IP à scanner :</label>
+    <input type="text" id="ip" placeholder="Ex : 8.8.8.8" />
+
+    <button onclick="scanIP()">Scanner</button>
+
+    <div id="result">Résultat en attente...</div>
+  </div>
+
+  <script>
+    async function scanIP() {
+      const ip = document.getElementById("ip").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!ip) {
+        resultDiv.innerText = "❌ Veuillez entrer une adresse IP.";
+        return;
+      }
+
+      resultDiv.innerText = "⏳ Scan en cours...";
+
+      try {
+        const response = await fetch("/simulate_bot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ command: `/scan ${ip}` })
+        });
+
+        const data = await response.json();
+        resultDiv.innerText = data.message || "✅ Scan terminé.";
+      } catch (err) {
+        resultDiv.innerText = "❌ Erreur réseau : " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 # app/main.py
 
 import os
+import sys
+from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -17,7 +19,7 @@ app = FastAPI(
     description="🕷️ Plateforme de veille OSINT avec intégration Telegram, PDF, Supabase et APIs de sécurité."
 )
 
-# ✅ Middleware CORS (à restreindre en prod)
+# ✅ Middleware CORS (à restreindre en production)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,27 +28,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Configuration des templates HTML
-templates = Jinja2Templates(directory="app/templates")
+# ✅ Détermination du chemin absolu vers templates (compatible Render & local)
+BASE_DIR = Path(__file__).resolve().parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
-# ✅ Inclusion des routes Telegram / Email / Auth
+# ✅ Inclusion dynamique des routes avec fallback Render
 try:
     from app.routes.email_route import router as EmailRouter
     from app.routes.auth_route import router as AuthRouter
     from app.telegram.webhook import router as TelegramWebhookRouter
-except ModuleNotFoundError as e:
-    import sys
-    from pathlib import Path
-    sys.path.append(str(Path(__file__).resolve().parent.parent))
+except ModuleNotFoundError:
+    sys.path.append(str(BASE_DIR.parent))
     from app.routes.email_route import router as EmailRouter
     from app.routes.auth_route import router as AuthRouter
     from app.telegram.webhook import router as TelegramWebhookRouter
 
+# ✅ Enregistrement des routes
 app.include_router(EmailRouter, prefix="/email", tags=["Email OSINT"])
 app.include_router(AuthRouter, prefix="/auth", tags=["Authentification"])
 app.include_router(TelegramWebhookRouter, prefix="", tags=["Telegram Webhook"])
 
-# ✅ Route HTML principale (index)
+# ✅ Route d'accueil HTML
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
