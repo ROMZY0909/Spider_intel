@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: spider-intel1
+    name: spider_intel-1
     env: docker
     plan: free
     region: frankfurt
