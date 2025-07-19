@@ -28,7 +28,12 @@ async def telegram_webhook(request: Request):
             if message_text == "/start":
                 bot.send_message(
                     chat_id=chat_id,
-                    text="🕷️ Bienvenue sur SPIDER INTEL !\nJe suis prêt à scanner pour toi.\n\nUtilise la commande :\n`/scan 8.8.8.8`",
+                    text=(
+                        "🕷️ *Bienvenue sur SPIDER INTEL !*\n"
+                        "Je suis prêt à scanner pour toi.\n\n"
+                        "Utilise la commande :\n"
+                        "`/scan 8.8.8.8`"
+                    ),
                     parse_mode="Markdown"
                 )
 
@@ -36,17 +41,25 @@ async def telegram_webhook(request: Request):
                 try:
                     ip = message_text.split()[1]
 
-                    # Import ici pour éviter l'erreur au chargement Render
-                    from scanner.email_scanner import scan_email
+                    # ✅ Import corrigé selon ta structure
+                    from app.scanner.email_scanner import scan_email
 
                     result = scan_email(ip)
-                    summary = result.get("summary", "❌ Résumé indisponible.")
 
-                    bot.send_message(
-                        chat_id=chat_id,
-                        text=f"🔍 Résultat du scan pour *{ip}* :\n\n{summary}",
-                        parse_mode="Markdown"
+                    country = result.get("ipapi", {}).get("country", "❓")
+                    abuse_score = result.get("abuseipdb", {}).get("data", {}).get("abuseConfidenceScore", "❓")
+                    org = result.get("shodan", {}).get("org", "❓")
+                    ports = result.get("shodan", {}).get("ports", [])
+
+                    formatted = (
+                        f"🔍 *Scan de* `{ip}`\n\n"
+                        f"🌍 *Pays* : {country}\n"
+                        f"👮 *AbuseIPDB* : {abuse_score}/100\n"
+                        f"🏢 *Fournisseur* : {org}\n"
+                        f"🔌 *Ports ouverts* : {', '.join(map(str, ports)) if ports else 'Aucun'}"
                     )
+
+                    bot.send_message(chat_id=chat_id, text=formatted, parse_mode="Markdown")
 
                 except Exception as scan_error:
                     bot.send_message(chat_id=chat_id, text=f"❌ Erreur pendant le scan : {scan_error}")
