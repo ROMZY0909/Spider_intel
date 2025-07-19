@@ -3,10 +3,7 @@
 from fastapi import APIRouter, Request
 import os
 from dotenv import load_dotenv
-
-# ✅ Import direct des classes nécessaires depuis python-telegram-bot
 from telegram import Bot, Update
-from telegram.constants import ParseMode
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -33,14 +30,12 @@ async def telegram_webhook(request: Request):
             if message_text == "/start":
                 bot.send_message(
                     chat_id=chat_id,
-                    text="🕷️ Bienvenue sur SPIDER INTEL !\nJe suis prêt à scanner pour toi.",
-                    parse_mode=ParseMode.HTML
+                    text="🕷️ Bienvenue sur SPIDER INTEL ! Je suis prêt à scanner pour toi."
                 )
             else:
                 bot.send_message(
                     chat_id=chat_id,
-                    text=f"🔎 Tu as dit : {message_text}",
-                    parse_mode=ParseMode.HTML
+                    text=f"🔎 Tu as dit : {message_text}"
                 )
 
         return {"status": "ok"}
