@@ -5,9 +5,10 @@ import sys
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
+import ipaddress
 
 # ✅ Chargement des variables d’environnement
 load_dotenv()
@@ -33,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
-# ✅ Inclusion dynamique des routes avec fallback Render
+# ✅ Inclusion dynamique des routes (Render + local compatible)
 try:
     from app.routes.email_route import router as EmailRouter
     from app.routes.auth_route import router as AuthRouter
@@ -49,7 +50,31 @@ app.include_router(EmailRouter, prefix="/email", tags=["Email OSINT"])
 app.include_router(AuthRouter, prefix="/auth", tags=["Authentification"])
 app.include_router(TelegramWebhookRouter, prefix="", tags=["Telegram Webhook"])
 
-# ✅ Route d'accueil HTML
+# ✅ Route d'accueil : interface web
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+# ✅ Endpoint pour simuler un scan via interface web
+from utils.scanner_core import full_osint_lookup
+
+@app.post("/simulate_bot")
+async def simulate_bot(request: Request):
+    data = await request.json()
+    command = data.get("command")
+
+    if not command or not command.startswith("/scan "):
+        return JSONResponse({"message": "❌ Commande invalide."}, status_code=400)
+
+    ip = command.split("/scan ")[1].strip()
+
+    try:
+        ipaddress.ip_address(ip)  # Validation IP
+    except ValueError:
+        return JSONResponse({"message": "❌ Adresse IP invalide."}, status_code=400)
+
+    try:
+        result = full_osint_lookup(ip)
+        return JSONResponse({"message": result})
+    except Exception as e:
+        return JSONResponse({"message": f"❌ Erreur lors du scan : {str(e)}"}, status_code=500)
