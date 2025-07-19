@@ -11,6 +11,9 @@ COPY . .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
+# ✅ Rend start.sh exécutable
+RUN chmod +x start.sh
+
 # 🌐 Port d’écoute pour Render (utilise PORT injecté)
 ENV PORT=10000
 EXPOSE $PORT
