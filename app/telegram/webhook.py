@@ -25,13 +25,35 @@ async def telegram_webhook(request: Request):
 
         if update.message:
             chat_id = update.message.chat.id
-            message_text = update.message.text
+            message_text = update.message.text.strip()
 
             if message_text == "/start":
                 bot.send_message(
                     chat_id=chat_id,
                     text="🕷️ Bienvenue sur SPIDER INTEL ! Je suis prêt à scanner pour toi."
                 )
+
+            elif message_text.startswith("/scan"):
+                try:
+                    ip = message_text.split()[1]
+                    from utils.scanner_core import full_osint_lookup
+                    result = full_osint_lookup(ip)
+
+                    country = result.get("ip-api", {}).get("country", "N/A")
+                    abuse_score = result.get("abuseipdb", {}).get("abuseConfidenceScore", "N/A")
+                    org = result.get("shodan", {}).get("org", "N/A")
+
+                    response = (
+                        f"🕷️ Résultat du scan pour l'IP : {ip}\n\n"
+                        f"🌍 Pays : {country}\n"
+                        f"👮 Score AbuseIPDB : {abuse_score}\n"
+                        f"🏢 Fournisseur : {org}"
+                    )
+                    bot.send_message(chat_id=chat_id, text=response)
+
+                except Exception as scan_error:
+                    bot.send_message(chat_id=chat_id, text=f"❌ Erreur pendant le scan : {scan_error}")
+
             else:
                 bot.send_message(
                     chat_id=chat_id,
