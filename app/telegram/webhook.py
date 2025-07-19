@@ -2,10 +2,9 @@
 
 from fastapi import APIRouter, Request
 import os
-from app.telegram._patched_inputfile import InputFile
 from dotenv import load_dotenv
 
-# ✅ Imports nécessaires depuis python-telegram-bot
+# ✅ Import direct des classes nécessaires depuis python-telegram-bot
 from telegram import Bot, Update
 from telegram.constants import ParseMode
 
@@ -25,15 +24,12 @@ async def telegram_webhook(request: Request):
         data = await request.json()
         print("✅ Message reçu depuis Telegram :", data)
 
-        # ✅ Conversion en objet Update
         update = Update.de_json(data, bot)
 
-        # Traitement du message reçu
         if update.message:
             chat_id = update.message.chat.id
             message_text = update.message.text
 
-            # Exemple de réponse automatique
             if message_text == "/start":
                 bot.send_message(
                     chat_id=chat_id,
